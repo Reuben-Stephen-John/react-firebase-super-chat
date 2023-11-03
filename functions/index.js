@@ -1,22 +1,31 @@
-const functions = require('firebase-functions');
+/**
+ * Import function triggers from their respective submodules:
+ *
+ * const {onCall} = require("firebase-functions/v2/https");
+ * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
+ *
+ * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ */
+
+import {onDocumentCreated} from "firebase-functions/v2/firestore";
+const {getFirestore} = require("firebase-admin/firestore");
 const Filter = require('bad-words');
-const admin = require('firebase-admin');
-admin.initializeApp();
+const {initializeApp} = require("firebase-admin/app");
 
-const db = admin.firestore();
+initializeApp();
+const db = getFirestore();
 
-exports.detectEvilUsers = functions.firestore
-       .document('messages/{msgId}')
-       .onCreate(async (doc, ctx) => {
 
+
+exports.detectEvilUsers = onDocumentCreated('messages/{messageId}', async (snap, context) => {
         const filter = new Filter();
-        const { text, uid } = doc.data(); 
+        const { text, uid } = snap.data(); 
 
 
         if (filter.isProfane(text)) {
 
             const cleaned = filter.clean(text);
-            await doc.ref.update({text: `🤐 I got BANNED for life for saying... ${cleaned}`});
+            await snap.ref.update({text: `🤐 I got BANNED for life for saying... ${cleaned}`});
 
             await db.collection('banned').doc(uid).set({});
         } 

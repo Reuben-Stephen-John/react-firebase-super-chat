@@ -119,7 +119,7 @@ function ChatMessage(props) {
   return (<>
     <div className={`message ${messageClass}`}>
     <img
-      src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'}
+      src={photoURL || 'https://www.kindpng.com/picc/m/269-2697881_computer-icons-user-clip-art-transparent-png-icon.png'}
       alt="User Profile"
     />
       <p>{text}</p>
